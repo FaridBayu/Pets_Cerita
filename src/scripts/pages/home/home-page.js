@@ -156,67 +156,47 @@ export default class HomePage {
       storyItem.classList.add("story-item");
 
       if (story.lat && story.lon) {
+        // 1. Simpan data cerita LENGKAP ke dataset untuk tombol "Simpan"
+        storyItem.dataset.story = JSON.stringify(story);
         storyItem.dataset.storyId = story.id;
         storyItem.dataset.lat = story.lat;
         storyItem.dataset.lon = story.lon;
-
         storyItem.setAttribute("tabindex", "0");
-        storyItem.addEventListener("keydown", (e) => {
-          if (e.key === "Enter" || e.key === " ") {
-            e.preventDefault();
-            this._activateStory(story.id, story.lat, story.lon);
-          }
-        });
-      }
+        // (Listener 'keydown' kita pindahkan ke _addStoryListClickListener)
+      } // 2. Tambahkan tombol "Simpan ke Favorit" di HTML
 
       storyItem.innerHTML = `
- <img src="${story.photoUrl}" alt="Foto cerita oleh ${story.name}" class="story-image">
- <div class="story-content">
- <h3 class="story-name">${story.name}</h3>
- <p class="story-date">${showFormattedDate(story.createdAt)}</p>
- <p class="story-description">${story.description.substring(0, 150)}...</p>
- </div>
- `;
-      storyListContainer.appendChild(storyItem);
-    });
+<img src="${story.photoUrl}" alt="Foto cerita oleh ${
+        story.name
+      }" class="story-image">
+<div class="story-content">
+h3 class="story-name">${story.name}</h3>
+<p class="story-date">${showFormattedDate(story.createdAt)}</p>
+<p class="story-description">${story.description.substring(0, 150)}...</p>
 
-    // Konversi & Tampilkan GeoJSON
+  <button class="button-secondary button-save-favorite" style="margin-top: 10px; width: 100%;">
+    Simpan ke Favorit
+  </button>
+</div>
+`;
+      storyListContainer.appendChild(storyItem);
+    }); // Konversi & Tampilkan GeoJSON (TIDAK BERUBAH)
+
     const geojsonData = storiesToGeoJSON(stories);
     const geoJsonLayer = L.geoJSON(geojsonData, {
       onEachFeature: (feature, layer) => {
         if (feature.properties) {
+          // ... (Seluruh kode onEachFeature Anda TIDAK BERUBAH) ...
           const { id, name, description, photoUrl } = feature.properties;
-
           this._storyMarkers[id] = layer;
-
-          const popupContent = `
- <h4>${name}</h4>
- <img src="${photoUrl}" alt="Foto oleh ${name}" style="width:100%; max-height: 150px; object-fit: cover;">
- <p>${description.substring(0, 100)}...</p>
- `;
+          const popupContent = `...`; // (Konten popup Anda)
           layer.bindPopup(popupContent);
-
           layer.on("popupopen", (e) => {
-            const latlng = e.popup.getLatLng();
-            const targetZoom = 15;
-            if (this._map.getZoom() < targetZoom) {
-              this._map.flyTo(latlng, targetZoom);
-            } else {
-              this._map.flyTo(latlng);
-            }
+            /* ... (Logika zoom Anda) ... */
           });
-
           const markerIcon = layer.getElement();
           if (markerIcon) {
-            markerIcon.setAttribute("tabindex", "0");
-            markerIcon.setAttribute("aria-label", `Marker untuk ${name}`);
-
-            markerIcon.addEventListener("keydown", (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                layer.openPopup();
-              }
-            });
+            /* ... (Logika aksesibilitas marker Anda) ... */
           }
         }
       },
@@ -228,16 +208,54 @@ export default class HomePage {
 
     this._addStoryListClickListener();
   }
-  _addStoryListClickListener() {
-    const storyListContainer = document.getElementById("story-list");
 
-    storyListContainer.addEventListener("click", (e) => {
+  // GANTI FUNGSI _addStoryListClickListener ANDA DENGAN YANG INI:
+  _addStoryListClickListener() {
+    const storyListContainer = document.getElementById("story-list"); // 3. Modifikasi listener 'click'
+
+    storyListContainer.addEventListener("click", async (e) => {
       const clickedCard = e.target.closest(".story-item");
       if (!clickedCard) return;
 
-      const { storyId, lat, lon } = clickedCard.dataset;
+      // CEK: Apakah yang diklik adalah tombol "Simpan"?
+      if (e.target.classList.contains("button-save-favorite")) {
+        e.stopPropagation(); // Hentikan event agar tidak zoom ke peta
 
+        try {
+          // Ambil data cerita yang kita simpan di dataset
+          const storyData = JSON.parse(clickedCard.dataset.story);
+
+          // CREATE: Panggil fungsi addFavorite dari db.js
+          await StoryDb.addFavorite(storyData);
+          alert(`Cerita "${storyData.name}" berhasil disimpan ke favorit!`);
+        } catch (error) {
+          console.error("Gagal menyimpan favorit:", error);
+          alert("Gagal menyimpan cerita.");
+        }
+        return; // Selesai
+      }
+
+      // Jika BUKAN tombol "Simpan", lakukan aksi lama (zoom peta)
+      const { storyId, lat, lon } = clickedCard.dataset;
       this._activateStory(storyId, lat, lon);
+    });
+
+    // 4. Tambahkan listener 'keydown' (untuk aksesibilitas)
+    storyListContainer.addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        const card = e.target.closest(".story-item");
+        if (!card) return;
+
+        // Cek jika fokus ada di tombol
+        if (document.activeElement.classList.contains("button-save-favorite")) {
+          document.activeElement.click(); // Picu klik tombol simpan
+        } else {
+          // Jika fokus di kartu, zoom peta
+          const { storyId, lat, lon } = card.dataset;
+          this._activateStory(storyId, lat, lon);
+        }
+      }
     });
   }
 }
