@@ -580,13 +580,13 @@ header {
 
 .favorites-page-container .favorite-buttons {
   display: flex;
-  gap: 10px; /* Jarak antar tombol */
-  margin-top: 15px; /* Jarak dari deskripsi (yang sudah Anda tambahkan) */
+  gap: 10px; 
+  margin-top: 15px; 
 }
 
-/* Tombol Hapus (Merah, setengah lebar) */
+
 .favorites-page-container .button-delete-favorite {
-  background-color: #d9534f; /* Merah */
+  background-color: #d9534f; 
   border-color: #d9534f;
   width: 50%;
   padding: 8px 10px;
@@ -596,9 +596,9 @@ header {
   background-color: #c9302c;
 }
 
-/* Tombol Edit (Hijau, setengah lebar) */
+
 .favorites-page-container .button-edit-favorite {
-  background-color: #5cb85c; /* Hijau */
+  background-color: #5cb85c; 
   border-color: #5cb85c;
   width: 50%;
   padding: 8px 10px;
@@ -608,24 +608,24 @@ header {
   background-color: #4cae4c;
 }
 
-/* Tombol "Simpan" (Biru, saat mode edit) */
+
 .favorites-page-container .button-save {
-  background-color: #0275d8; /* Biru */
+  background-color: #0275d8; 
   border-color: #0275d8;
 }
 .favorites-page-container .button-save:hover {
   background-color: #025aa5;
 }
 
-/* Visual feedback saat field sedang diedit */
+
 .favorites-page-container .is-editing-field {
   background-color: #fef9e7;
-  outline: 2px solid #E0A800; /* Warna kuning dari style Anda */
+  outline: 2px solid #E0A800; 
   border-radius: 4px;
   padding: 2px 4px;
 }
 
-.about-page-container {
+.subscription-page-container {
   max-width: 800px;
 }
 
@@ -646,15 +646,13 @@ header {
   margin-bottom: 15px;
 }
 
-/* Style untuk tombol Unsubscribe (Merah) */
+
 #notification-toggle-button.button-delete {
   background-color: #d9534f;
-  /* Merah (warna .error-message Anda) */
   border-color: #d9534f;
 }
 
 #notification-toggle-button.button-delete:hover {
   background-color: #c9302c;
-  /* Merah lebih gelap */
   border-color: #c9302c;
 }

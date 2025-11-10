@@ -5,8 +5,6 @@ import { VitePWA } from 'vite-plugin-pwa';
 export default defineConfig({
   root: resolve(__dirname, 'src'),
 
-  // 1. HAPUS 'base: /Pets_Cerita/'
-  // base: '/Pets_Cerita/', // <-- HAPUS ATAU KOMENTARI BARIS INI
 
   publicDir: resolve(__dirname, 'src', 'public'),
   build: {
@@ -37,27 +35,22 @@ export default defineConfig({
         background_color: '#F5F5F1',
         display: 'standalone',
 
-        // 2. KEMBALIKAN 'scope' DAN 'start_url' KE NORMAL
         scope: '/',
         start_url: '/index.html',
         icons: [
           {
-            // 3. KEMBALIKAN '/' DI AWAL PATH GAMBAR
             src: '/images/logo-192.png',
             sizes: '192x192',
             type: 'image/png',
-            purpose: 'any maskable'
           },
           {
             src: '/images/logo-512.png',
             sizes: '512x512',
             type: 'image/png',
-            purpose: 'any maskable'
           },
         ],
         screenshots: [
           {
-            // 3. KEMBALIKAN '/' DI AWAL PATH GAMBAR
             src: '/images/screenshot1.png',
             sizes: '1902x907',
             type: 'image/png',
@@ -71,7 +64,6 @@ export default defineConfig({
         ]
       },
 
-      // Konfigurasi Service Worker (TIDAK BERUBAH DAN SUDAH BENAR)
       strategies: 'injectManifest',
       srcDir: '.',
       filename: 'sw.js'

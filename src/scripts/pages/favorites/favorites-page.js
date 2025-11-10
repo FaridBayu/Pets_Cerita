@@ -1,5 +1,3 @@
-// Lokasi: src/scripts/pages/favorites/favorites-page.js
-
 import StoryDb from "../../utils/db";
 import { showFormattedDate } from "../../utils";
 
@@ -21,7 +19,7 @@ export default class FavoritesPage {
         const favoriteListContainer = document.getElementById("favorite-list");
 
         try {
-            const stories = await StoryDb.getAllFavorites(); // --- Bagian READ (State Kosong) ---
+            const stories = await StoryDb.getAllFavorites(); 
 
             if (stories.length === 0) {
                 favoriteListContainer.innerHTML = `
@@ -31,13 +29,13 @@ export default class FavoritesPage {
                 </div>
                 `;
                 return;
-            } // --- Bagian READ (Render Daftar Cerita) ---
+            } 
 
             favoriteListContainer.innerHTML = "";
             stories.forEach((story) => {
                 const storyItem = document.createElement("article");
                 storyItem.classList.add("story-item");
-                storyItem.dataset.storyId = story.id; // Simpan ID di elemen kartu // HTML untuk kartu cerita, sekarang dengan tombol Edit & Hapus
+                storyItem.dataset.storyId = story.id; 
 
                 storyItem.innerHTML = `
                 <img src="${story.photoUrl}" alt="Foto cerita oleh ${story.name}" class="story-image">
@@ -51,46 +49,44 @@ export default class FavoritesPage {
                 Hapus</button>
                 </div>
                 </div>
- `;
+                `;
                 favoriteListContainer.appendChild(storyItem);
-            }); // --- Event Listener untuk UPDATE dan DELETE ---
+            }); 
 
             favoriteListContainer.addEventListener("click", async (event) => {
                 const storyItem = event.target.closest(".story-item");
                 if (!storyItem) return;
 
-                const storyId = storyItem.dataset.storyId; // --- Logika Tombol HAPUS (DELETE) ---
+                const storyId = storyItem.dataset.storyId; 
 
                 if (event.target.classList.contains("button-delete-favorite")) {
                     if (confirm("Anda yakin ingin menghapus cerita ini dari favorit?")) {
                         try {
                             await StoryDb.deleteFavorite(storyId);
                             alert("Cerita berhasil dihapus!");
-                            this.afterRender(); // Refresh list
+                            this.afterRender(); 
                         } catch (error) {
                             console.error("Gagal menghapus favorit:", error);
                             alert(`Gagal menghapus favorit: ${error.message}`);
                         }
                     }
-                } // --- Logika Tombol EDIT / SIMPAN (UPDATE) ---
+                } 
 
                 if (event.target.classList.contains("button-edit-favorite")) {
                     const editButton = event.target;
                     const nameElement = storyItem.querySelector('[data-field="name"]');
                     const descElement = storyItem.querySelector(
                         '[data-field="description"]'
-                    ); // Cek apakah sedang dalam mode edit
+                    ); 
                     const isEditing = editButton.classList.contains("is-editing");
 
                     if (isEditing) {
-                        // --- FASE 2: AKSI SIMPAN (UPDATE) ---
                         try {
-                            // 1. Ambil data asli (untuk menjaga fotoUrl, dll)
-                            const originalStory = await StoryDb.getFavorite(storyId); // 2. Perbarui dengan teks baru dari elemen yang diedit
+                            const originalStory = await StoryDb.getFavorite(storyId); 
                             originalStory.name = nameElement.textContent;
-                            originalStory.description = descElement.textContent; // 3. Simpan (UPDATE) ke IndexedDB // 'addFavorite' menggunakan 'put', jadi bisa untuk 'Update'
+                            originalStory.description = descElement.textContent; 
 
-                            await StoryDb.addFavorite(originalStory); // 4. Ubah tampilan kembali ke mode normal
+                            await StoryDb.addFavorite(originalStory);
 
                             nameElement.contentEditable = false;
                             descElement.contentEditable = false;
@@ -104,14 +100,13 @@ export default class FavoritesPage {
                             alert("Gagal menyimpan perubahan.");
                         }
                     } else {
-                        // --- FASE 1: AKSI EDIT ---
-                        // 1. Ubah tampilan ke mode edit
+
                         nameElement.contentEditable = true;
                         descElement.contentEditable = true;
                         editButton.textContent = "Simpan";
                         editButton.classList.add("is-editing", "button-save");
                         nameElement.classList.add("is-editing-field");
-                        descElement.classList.add("is-editing-field"); // 2. Fokus ke elemen pertama yang bisa diedit
+                        descElement.classList.add("is-editing-field"); 
                         nameElement.focus();
                     }
                 }

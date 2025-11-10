@@ -35,7 +35,7 @@ export default class App {
   async renderPage() {
     const url = getActiveRoute();
     const page = routes[url];
-    const protectedRoutes = ["/", "/add", "/favorites"];
+    const protectedRoutes = ["/", "/add", "/favorites", "/subscription"];
     const guestOnlyRoutes = ["/login", "/register"];
     const userIsLoggedIn = isUserLoggedIn();
 
