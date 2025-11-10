@@ -1,2 +1,2 @@
-APP_URL=<url_aplikasi>
+APP_URL=<https://faridbayu.github.io/Pets_Cerita/>
 MAP_SERVICE_API_KEY=<api_key>
