@@ -161,28 +161,29 @@ export default class HomePage {
         storyItem.dataset.lat = story.lat;
         storyItem.dataset.lon = story.lon;
         storyItem.setAttribute("tabindex", "0");
-      } 
+      }
 
       storyItem.innerHTML = `
-      <img src="${story.photoUrl}" alt="Foto cerita oleh ${story.name }" class="story-image">
-      <div class="story-content">
-      h3 class="story-name">${story.name}</h3>
-      <p class="story-date">${showFormattedDate(story.createdAt)}</p>
-      <p class="story-description">${story.description.substring(0, 150)}...</p>
-      
-      <button class="button-secondary button-save-favorite" style="margin-top: 10px; width: 100%;">Simpan ke Favorit
-      </button>
-      </div>
-`;
+        <img src="${story.photoUrl}" alt="Foto cerita oleh ${story.name}" class="story-image">
+        <div class="story-content">
+          <h3 class="story-name">${story.name}</h3>
+          <p class="story-date">${showFormattedDate(story.createdAt)}</p>
+          <p class="story-description">${story.description.substring(0, 150)}...</p>
+          <button class="button-secondary button-save-favorite" style="margin-top: 10px; width: 100%;">
+            Simpan ke Favorit
+          </button>
+          
+        </div>
+      `;
       storyListContainer.appendChild(storyItem);
-    }); 
+    });
     const geojsonData = storiesToGeoJSON(stories);
     const geoJsonLayer = L.geoJSON(geojsonData, {
       onEachFeature: (feature, layer) => {
         if (feature.properties) {
           const { id, name, description, photoUrl } = feature.properties;
           this._storyMarkers[id] = layer;
-          const popupContent = `...`; 
+          const popupContent = `...`;
           layer.bindPopup(popupContent);
           layer.on("popupopen", (e) => {
           });
@@ -202,14 +203,14 @@ export default class HomePage {
 
 
   _addStoryListClickListener() {
-    const storyListContainer = document.getElementById("story-list"); 
+    const storyListContainer = document.getElementById("story-list");
 
     storyListContainer.addEventListener("click", async (e) => {
       const clickedCard = e.target.closest(".story-item");
       if (!clickedCard) return;
 
       if (e.target.classList.contains("button-save-favorite")) {
-        e.stopPropagation(); 
+        e.stopPropagation();
 
         try {
           const storyData = JSON.parse(clickedCard.dataset.story);
@@ -219,7 +220,7 @@ export default class HomePage {
           console.error("Gagal menyimpan favorit:", error);
           alert("Gagal menyimpan cerita.");
         }
-        return; 
+        return;
       }
 
       const { storyId, lat, lon } = clickedCard.dataset;
