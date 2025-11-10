@@ -1,11 +1,13 @@
-// Lokasi: vite.config.js
 import { defineConfig } from 'vite';
 import { resolve } from 'path';
-import { VitePWA } from 'vite-plugin-pwa'; 
+import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   root: resolve(__dirname, 'src'),
-  base: '/Pets_Cerita/',
+
+  // 1. HAPUS 'base: /Pets_Cerita/'
+  // base: '/Pets_Cerita/', // <-- HAPUS ATAU KOMENTARI BARIS INI
+
   publicDir: resolve(__dirname, 'src', 'public'),
   build: {
     outDir: resolve(__dirname, 'dist'),
@@ -23,11 +25,9 @@ export default defineConfig({
     },
   },
 
-
   plugins: [
     VitePWA({
       registerType: 'autoUpdate',
-
 
       manifest: {
         name: 'Peta Cerita',
@@ -37,41 +37,44 @@ export default defineConfig({
         background_color: '#F5F5F1',
         display: 'standalone',
 
-        scope: '/Pets_Cerita/',
-        start_url: '/Pets_Cerita/index.html',
+        // 2. KEMBALIKAN 'scope' DAN 'start_url' KE NORMAL
+        scope: '/',
+        start_url: '/index.html',
         icons: [
           {
-            src: 'images/logo-192.png', 
+            // 3. KEMBALIKAN '/' DI AWAL PATH GAMBAR
+            src: '/images/logo-192.png',
             sizes: '192x192',
             type: 'image/png',
+            purpose: 'any maskable'
           },
           {
-            src: 'images/logo-512.png', 
+            src: '/images/logo-512.png',
             sizes: '512x512',
             type: 'image/png',
+            purpose: 'any maskable'
           },
         ],
-  
         screenshots: [
           {
-            // Entri untuk Desktop/Wide
-            src: 'images/screenshot1.png',
+            // 3. KEMBALIKAN '/' DI AWAL PATH GAMBAR
+            src: '/images/screenshot1.png',
             sizes: '1902x907',
             type: 'image/png',
             form_factor: 'wide'
           },
           {
-
-            src: 'images/screenshot1.png',
+            src: '/images/screenshot1.png',
             sizes: '1902x907',
             type: 'image/png'
           }
         ]
       },
 
-      strategies: 'injectManifest', 
-      srcDir: '.', 
-      filename: 'sw.js' 
+      // Konfigurasi Service Worker (TIDAK BERUBAH DAN SUDAH BENAR)
+      strategies: 'injectManifest',
+      srcDir: '.',
+      filename: 'sw.js'
     })
   ]
 });
