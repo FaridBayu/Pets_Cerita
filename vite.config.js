@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 export default defineConfig({
   root: resolve(__dirname, 'src'),
+  base: '/Pets_Cerita/',
   publicDir: resolve(__dirname, 'src', 'public'),
   build: {
     outDir: resolve(__dirname, 'dist'),
