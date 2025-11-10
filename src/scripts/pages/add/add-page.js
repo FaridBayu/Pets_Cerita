@@ -194,10 +194,7 @@ export default class AddPage {
             const description = document.getElementById('description-input').value;
             const token = getUserToken();
 
-            // --- INI ADALAH LOGIKA BARU DENGAN try...catch ---
             try {
-                // --- LOGIKA UTAMA (ONLINE) ---
-                // Coba kirim ke API seperti biasa
                 const formData = new FormData();
                 formData.append('photo', photoFile);
                 formData.append('description', description);
@@ -206,7 +203,7 @@ export default class AddPage {
 
                 const response = await StoryApi.addNewStory(token, formData);
                 if (response.error) {
-                    throw new Error(response.message); // Jika API error, lempar ke catch
+                    throw new Error(response.message); 
                 }
 
                 // Berhasil online
@@ -215,34 +212,33 @@ export default class AddPage {
                 window.location.hash = '#/';
 
             } catch (error) {
-                // --- LOGIKA FALLBACK (OFFLINE) ---
+                // --- (OFFLINE) ---
                 console.error('Upload gagal (mungkin offline), menyimpan ke outbox...', error.message);
 
                 try {
                     // Buat object data untuk disimpan (FormData TIDAK bisa ke IDB)
                     const storyData = {
-                        photo: photoFile, // Simpan sebagai File/Blob
+                        photo: photoFile, 
                         description: description,
                         lat: latInput.value,
                         lon: lonInput.value,
                     };
 
-                    // 1. Simpan ke IndexedDB
+                    //  Simpan ke IndexedDB
                     await StoryDb.addStoryToOutbox(storyData);
                     console.log('Story disimpan ke outbox');
 
-                    // 2. Minta Background Sync
+                    // Minta Background Sync
                     if ('serviceWorker' in navigator && 'SyncManager' in window) {
                         const swRegistration = await navigator.serviceWorker.ready;
                         // Daftarkan tag 'sync-new-stories'
                         await swRegistration.sync.register('sync-new-stories');
                         console.log('Background Sync terdaftar');
 
-                        // 3. Beri tahu user dan redirect
+                        // Beri tahu user dan redirect
                         alert('Anda sedang offline. Story disimpan dan akan di-upload saat koneksi kembali.');
                         window.location.hash = '#/';
                     } else {
-                        // Fallback jika Background Sync tidak didukung
                         throw new Error('Background Sync tidak didukung oleh browser ini.');
                     }
 

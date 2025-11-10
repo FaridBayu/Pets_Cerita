@@ -36,15 +36,17 @@ export default defineConfig({
         theme_color: '#4A6D4D',
         background_color: '#F5F5F1',
         display: 'standalone',
-        start_url: '/index.html', 
+
+        scope: '/Pets_Cerita/',
+        start_url: '/Pets_Cerita/index.html',
         icons: [
           {
-            src: '/images/logo-192.png', 
+            src: 'images/logo-192.png', 
             sizes: '192x192',
             type: 'image/png',
           },
           {
-            src: '/images/logo-512.png', 
+            src: 'images/logo-512.png', 
             sizes: '512x512',
             type: 'image/png',
           },
@@ -53,14 +55,14 @@ export default defineConfig({
         screenshots: [
           {
             // Entri untuk Desktop/Wide
-            src: '/images/screenshot1.png',
+            src: 'images/screenshot1.png',
             sizes: '1902x907',
             type: 'image/png',
             form_factor: 'wide'
           },
           {
 
-            src: '/images/screenshot1.png',
+            src: 'images/screenshot1.png',
             sizes: '1902x907',
             type: 'image/png'
           }

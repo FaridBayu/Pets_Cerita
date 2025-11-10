@@ -6,7 +6,7 @@ import markerShadow from 'leaflet/dist/images/marker-shadow.png';
 import markerIcon2x from 'leaflet/dist/images/marker-icon-2x.png';
 
 import App from './pages/app';
-// 1. Impor 'getUserToken' ditambahkan
+
 import { isUserLoggedIn, removeUserToken, getUserToken } from './utils/auth';
 
 delete L.Icon.Default.prototype._getIconUrl;
@@ -28,7 +28,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   const loginNav = document.getElementById('login-nav');
   const navList = document.getElementById('nav-list');
 
-  // Logika untuk menampilkan/menyembunyikan nav (TIDAK BERUBAH)
   if (isUserLoggedIn()) {
     // Tampilkan tombol Add Story & Logout
     logoutButton.style.display = 'block';
@@ -47,14 +46,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (loginNav) loginNav.style.display = 'block';
   }
 
-  // Event listener untuk Logout (TIDAK BERUBAH)
+  // Event listener untuk Logout 
   logoutButton.addEventListener('click', (e) => {
     e.preventDefault();
     removeUserToken();
     window.location.hash = '#/login';
     window.location.reload();
   });
-  // Logika transisi halaman (TIDAK BERUBAH)
+  // Logika transisi halaman 
   const renderWithTransition = async () => {
     if (!document.startViewTransition) {
       await app.renderPage();
@@ -72,10 +71,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     await renderWithTransition();
   });
 
-  // --- KODE BARU DIMULAI DARI SINI ---
-
-  // 2. TAMBAHKAN: Respon permintaan token dari SW (Kriteria 4 Advanced)
-  // 
   if ('serviceWorker' in navigator) {
     navigator.serviceWorker.addEventListener('message', (event) => {
       // Cek apakah pesannya adalah permintaan token
@@ -89,8 +84,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
   }
 
-  // 3. TAMBAHKAN: Panggil fungsi subscribe (Kriteria 2)
-  // Panggil fungsi subscribe HANYA JIKA user sudah login
+  // fungsi subscribe 
+  // Panggil fungsi subscribe jika user sudah login
   if (isUserLoggedIn()) {
     console.log('Client: User login, mendaftarkan Push Notifications...');
     subscribeToPushNotifications();
@@ -98,11 +93,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 
-// --- 4. TAMBAHKAN SEMUA FUNGSI BARU DI BAWAH INI ---
 
-/**
- * Mengkonversi string VAPID public key (Base64) ke Uint8Array.
- */
+
+
 function urlBase64ToUint8Array(base64String) {
   const padding = '='.repeat((4 - base64String.length % 4) % 4);
   const base64 = (base64String + padding).replace(/-/g, '+').replace(/_/g, '/');
@@ -114,29 +107,24 @@ function urlBase64ToUint8Array(base64String) {
   return outputArray;
 }
 
-/**
- * Mendaftarkan user ke Push Notification (Kriteria 2).
- */
+
 async function subscribeToPushNotifications() {
   try {
     // Tunggu sampai Service Worker siap
     const swRegistration = await navigator.serviceWorker.ready;
 
-    // 1. Minta Izin Notifikasi ke User
+    // Minta Izin Notifikasi ke User
     const permission = await Notification.requestPermission();
     if (permission !== 'granted') {
       console.log('Izin notifikasi ditolak oleh user.');
       return;
     }
 
-    // 2. Ambil VAPID Public Key (Sudah benar)
+    // Ambil VAPID Public Key (Sudah benar)
     const VAPID_PUBLIC_KEY = 'BCCs2eonMI-6H2ctvFaWg-UYdDv387Vno_bzUzALpB442r2lCnsHmtrx8biyPi_E-1fSGABK_Qs_GlvPoJJqxbk';
 
-    // 3. BLOK 'IF' YANG ERROR SUDAH DIHAPUS
-
-    // 4. Lakukan Subscribe ke Push Manager
     const options = {
-      userVisibleOnly: true, // Selalu true
+      userVisibleOnly: true,
       applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
     };
 
