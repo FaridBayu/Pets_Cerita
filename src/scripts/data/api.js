@@ -54,8 +54,6 @@ class StoryApi {
 
   // --- 1. TAMBAHKAN FUNGSI BARU UNTUK SUBSCRIBE ---
   static async subscribeNotification(token, subscription) {
-    // 'subscription' adalah objek PushSubscription dari browser
-    // Kita perlu mengubahnya ke format yang diminta API
     const keys = subscription.toJSON().keys;
     const requestBody = {
       endpoint: subscription.endpoint,

@@ -1,2 +1,2 @@
-APP_URL=<https://faridbayu.github.io/Pets_Cerita/>
+APP_URL=<https://petacerita.netlify.app/>
 MAP_SERVICE_API_KEY=<api_key>

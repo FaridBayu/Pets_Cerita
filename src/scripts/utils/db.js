@@ -1,4 +1,3 @@
-// Lokasi: src/scripts/utils/db.js
 import { openDB } from "idb";
 import CONFIG from "../config";
 
